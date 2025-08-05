@@ -46,11 +46,15 @@ export function useAttendance() {
     setAttendanceRecords(prev => prev.filter(r => r.subjectId !== subjectId));
   }, []);
 
-  const markAttendance = useCallback((subjectId: string, present: boolean, date?: string) => {
+  const markAttendance = useCallback((subjectId: string, lectureNumber: number, present: boolean, date?: string) => {
     const attendanceDate = date || getCurrentDateString();
     
     setAttendanceRecords(prev => {
-      const existingRecord = prev.find(r => r.subjectId === subjectId && r.date === attendanceDate);
+      const existingRecord = prev.find(r => 
+        r.subjectId === subjectId && 
+        r.date === attendanceDate && 
+        r.lectureNumber === lectureNumber
+      );
       
       if (existingRecord) {
         // Update existing record
@@ -65,6 +69,7 @@ export function useAttendance() {
           id: nanoid(),
           subjectId,
           date: attendanceDate,
+          lectureNumber,
           present,
           createdAt: new Date(),
         };
@@ -78,9 +83,17 @@ export function useAttendance() {
     return subjects.filter(subject => subject.schedule.includes(todayDay));
   }, [subjects]);
 
-  const getAttendanceForDate = useCallback((subjectId: string, date: string): boolean | undefined => {
-    const record = attendanceRecords.find(r => r.subjectId === subjectId && r.date === date);
+  const getAttendanceForDate = useCallback((subjectId: string, date: string, lectureNumber: number): boolean | undefined => {
+    const record = attendanceRecords.find(r => 
+      r.subjectId === subjectId && 
+      r.date === date && 
+      r.lectureNumber === lectureNumber
+    );
     return record?.present;
+  }, [attendanceRecords]);
+
+  const getAttendanceForSubjectAndDate = useCallback((subjectId: string, date: string): AttendanceRecord[] => {
+    return attendanceRecords.filter(r => r.subjectId === subjectId && r.date === date);
   }, [attendanceRecords]);
 
   const getAttendanceStats = useCallback((): AttendanceStats[] => {
@@ -122,6 +135,7 @@ export function useAttendance() {
     markAttendance,
     getTodaySubjects,
     getAttendanceForDate,
+    getAttendanceForSubjectAndDate,
     getAttendanceStats,
     getOverallStats,
   };

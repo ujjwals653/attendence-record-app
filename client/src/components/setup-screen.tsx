@@ -43,15 +43,28 @@ export function SetupScreen({ subjects, onAddSubject, onRemoveSubject }: SetupSc
         <div className="space-y-3">
           <h3 className="text-lg font-medium">Your Subjects</h3>
           {subjects.map((subject) => (
-            <Card key={subject.id} className="shadow-material">
+            <Card 
+              key={subject.id} 
+              className="shadow-material border-l-4"
+              style={{ borderLeftColor: subject.color }}
+            >
               <CardContent className="p-4 flex items-center justify-between">
-                <div>
-                  <h4 className="font-medium" data-testid={`text-subject-${subject.id}`}>
-                    {subject.name}
-                  </h4>
-                  <p className="text-sm text-gray-600">
-                    {getScheduleText(subject.schedule)}
-                  </p>
+                <div className="flex items-center space-x-3">
+                  <div 
+                    className="w-4 h-4 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: subject.color }}
+                  />
+                  <div>
+                    <h4 className="font-medium" data-testid={`text-subject-${subject.id}`}>
+                      {subject.name}
+                    </h4>
+                    <p className="text-sm text-gray-600">
+                      {getScheduleText(subject.schedule)}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {subject.lecturesPerDay === 1 ? "1 lecture per day" : `${subject.lecturesPerDay} lectures per day`}
+                    </p>
+                  </div>
                 </div>
                 <Button
                   variant="ghost"

@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DaySelector } from "./day-selector";
 import { InsertSubject } from "@shared/schema";
 import { getDayName } from "@/lib/date-utils";
-import { Plus } from "lucide-react";
+import { Plus, Palette } from "lucide-react";
 
 interface SubjectFormProps {
   onAddSubject: (subject: InsertSubject) => void;
@@ -15,7 +16,20 @@ interface SubjectFormProps {
 export function SubjectForm({ onAddSubject }: SubjectFormProps) {
   const [name, setName] = useState("");
   const [selectedDays, setSelectedDays] = useState<number[]>([]);
+  const [lecturesPerDay, setLecturesPerDay] = useState("1");
+  const [selectedColor, setSelectedColor] = useState("#8B5CF6");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const colorOptions = [
+    { value: "#8B5CF6", name: "Purple", bg: "bg-purple-500" },
+    { value: "#3B82F6", name: "Blue", bg: "bg-blue-500" },
+    { value: "#10B981", name: "Green", bg: "bg-green-500" },
+    { value: "#F59E0B", name: "Orange", bg: "bg-orange-500" },
+    { value: "#EF4444", name: "Red", bg: "bg-red-500" },
+    { value: "#8B5A2B", name: "Brown", bg: "bg-amber-700" },
+    { value: "#6B7280", name: "Gray", bg: "bg-gray-500" },
+    { value: "#EC4899", name: "Pink", bg: "bg-pink-500" },
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,11 +44,15 @@ export function SubjectForm({ onAddSubject }: SubjectFormProps) {
       onAddSubject({
         name: name.trim(),
         schedule: selectedDays,
+        lecturesPerDay: parseInt(lecturesPerDay),
+        color: selectedColor,
       });
       
       // Reset form
       setName("");
       setSelectedDays([]);
+      setLecturesPerDay("1");
+      setSelectedColor("#8B5CF6");
     } finally {
       setIsSubmitting(false);
     }
@@ -84,6 +102,58 @@ export function SubjectForm({ onAddSubject }: SubjectFormProps) {
                 Selected: {getScheduleText()}
               </p>
             )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="lectures-per-day" className="text-sm font-medium text-gray-700 mb-2">
+                Lectures per Day
+              </Label>
+              <Select value={lecturesPerDay} onValueChange={setLecturesPerDay}>
+                <SelectTrigger data-testid="select-lectures-per-day">
+                  <SelectValue placeholder="Select lectures" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[1, 2, 3, 4, 5].map((num) => (
+                    <SelectItem key={num} value={num.toString()}>
+                      {num} lecture{num > 1 ? 's' : ''}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="subject-color" className="text-sm font-medium text-gray-700 mb-2">
+                Subject Color
+              </Label>
+              <Select value={selectedColor} onValueChange={setSelectedColor}>
+                <SelectTrigger data-testid="select-subject-color">
+                  <SelectValue>
+                    <div className="flex items-center">
+                      <div 
+                        className="w-4 h-4 rounded-full mr-2"
+                        style={{ backgroundColor: selectedColor }}
+                      />
+                      {colorOptions.find(c => c.value === selectedColor)?.name}
+                    </div>
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {colorOptions.map((color) => (
+                    <SelectItem key={color.value} value={color.value}>
+                      <div className="flex items-center">
+                        <div 
+                          className="w-4 h-4 rounded-full mr-2"
+                          style={{ backgroundColor: color.value }}
+                        />
+                        {color.name}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <Button

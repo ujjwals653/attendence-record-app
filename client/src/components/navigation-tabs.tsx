@@ -27,8 +27,8 @@ export function NavigationTabs({ activeTab, onTabChange }: NavigationTabsProps) 
               className={cn(
                 "flex-1 py-3 px-4 text-center border-b-2 font-medium transition-colors",
                 isActive
-                  ? "border-primary text-primary"
-                  : "border-transparent text-gray-600 hover:text-gray-800"
+                  ? "border-purple-500 text-purple-600 bg-purple-50"
+                  : "border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50"
               )}
               data-testid={`tab-${tab.id}`}
             >

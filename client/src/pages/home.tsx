@@ -18,6 +18,7 @@ export default function Home() {
     markAttendance,
     getTodaySubjects,
     getAttendanceForDate,
+    getAttendanceForSubjectAndDate,
     getAttendanceStats,
     getOverallStats,
   } = useAttendance();
@@ -56,13 +57,13 @@ export default function Home() {
   return (
     <div className="max-w-sm mx-auto bg-white min-h-screen shadow-lg relative">
       {/* Header */}
-      <header className="bg-primary text-white p-4 shadow-material">
+      <header className="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-4 shadow-material">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-medium">AttendanceTracker</h1>
           <Button
             variant="ghost"
             size="sm"
-            className="text-white hover:bg-blue-700 rounded-full p-2"
+            className="text-white hover:bg-purple-800 rounded-full p-2"
             data-testid="button-settings"
           >
             <Settings className="w-5 h-5" />
@@ -84,10 +85,9 @@ export default function Home() {
 
       {activeTab === "daily" && (
         <DailyScreen
-          todaySubjects={todaySubjects}
-          getAttendanceForDate={getAttendanceForDate}
+          subjects={subjects}
+          getAttendanceForSubjectAndDate={getAttendanceForSubjectAndDate}
           markAttendance={markAttendance}
-          getAttendanceStats={getAttendanceStats}
         />
       )}
 

@@ -28,8 +28,8 @@ export function DaySelector({ selectedDays, onDaysChange, className }: DaySelect
             className={cn(
               "w-12 h-12 rounded-full border-2 flex items-center justify-center text-sm font-medium transition-colors",
               isSelected
-                ? "border-primary bg-primary text-white"
-                : "border-gray-300 hover:bg-gray-50"
+                ? "border-purple-500 bg-purple-500 text-white"
+                : "border-gray-300 hover:bg-purple-50 hover:border-purple-300"
             )}
             data-testid={`day-selector-${day}`}
           >
