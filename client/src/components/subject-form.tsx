@@ -16,7 +16,6 @@ interface SubjectFormProps {
 export function SubjectForm({ onAddSubject }: SubjectFormProps) {
   const [name, setName] = useState("");
   const [selectedDays, setSelectedDays] = useState<number[]>([]);
-  const [lecturesPerDay, setLecturesPerDay] = useState("1");
   const [selectedColor, setSelectedColor] = useState("#8B5CF6");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -44,14 +43,13 @@ export function SubjectForm({ onAddSubject }: SubjectFormProps) {
       onAddSubject({
         name: name.trim(),
         schedule: selectedDays,
-        lecturesPerDay: parseInt(lecturesPerDay),
+        lecturesPerDay: 1, // Default to 1, can be adjusted per day in daily view
         color: selectedColor,
       });
       
       // Reset form
       setName("");
       setSelectedDays([]);
-      setLecturesPerDay("1");
       setSelectedColor("#8B5CF6");
     } finally {
       setIsSubmitting(false);
@@ -104,56 +102,39 @@ export function SubjectForm({ onAddSubject }: SubjectFormProps) {
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="lectures-per-day" className="text-sm font-medium text-gray-700 mb-2">
-                Lectures per Day
-              </Label>
-              <Select value={lecturesPerDay} onValueChange={setLecturesPerDay}>
-                <SelectTrigger data-testid="select-lectures-per-day">
-                  <SelectValue placeholder="Select lectures" />
-                </SelectTrigger>
-                <SelectContent>
-                  {[1, 2, 3, 4, 5].map((num) => (
-                    <SelectItem key={num} value={num.toString()}>
-                      {num} lecture{num > 1 ? 's' : ''}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="subject-color" className="text-sm font-medium text-gray-700 mb-2">
-                Subject Color
-              </Label>
-              <Select value={selectedColor} onValueChange={setSelectedColor}>
-                <SelectTrigger data-testid="select-subject-color">
-                  <SelectValue>
+          <div>
+            <Label htmlFor="subject-color" className="text-sm font-medium text-gray-700 mb-2">
+              Subject Color
+            </Label>
+            <Select value={selectedColor} onValueChange={setSelectedColor}>
+              <SelectTrigger data-testid="select-subject-color">
+                <SelectValue>
+                  <div className="flex items-center">
+                    <div 
+                      className="w-4 h-4 rounded-full mr-2"
+                      style={{ backgroundColor: selectedColor }}
+                    />
+                    {colorOptions.find(c => c.value === selectedColor)?.name}
+                  </div>
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {colorOptions.map((color) => (
+                  <SelectItem key={color.value} value={color.value}>
                     <div className="flex items-center">
                       <div 
                         className="w-4 h-4 rounded-full mr-2"
-                        style={{ backgroundColor: selectedColor }}
+                        style={{ backgroundColor: color.value }}
                       />
-                      {colorOptions.find(c => c.value === selectedColor)?.name}
+                      {color.name}
                     </div>
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {colorOptions.map((color) => (
-                    <SelectItem key={color.value} value={color.value}>
-                      <div className="flex items-center">
-                        <div 
-                          className="w-4 h-4 rounded-full mr-2"
-                          style={{ backgroundColor: color.value }}
-                        />
-                        {color.name}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-gray-500 mt-1">
+              Number of lectures can be adjusted daily in the Today tab
+            </p>
           </div>
 
           <Button

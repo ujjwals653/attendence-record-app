@@ -16,6 +16,7 @@ export default function Home() {
     addSubject,
     removeSubject,
     markAttendance,
+    removeAttendance,
     getTodaySubjects,
     getAttendanceForDate,
     getAttendanceForSubjectAndDate,
@@ -88,6 +89,7 @@ export default function Home() {
           subjects={subjects}
           getAttendanceForSubjectAndDate={getAttendanceForSubjectAndDate}
           markAttendance={markAttendance}
+          removeAttendance={removeAttendance}
         />
       )}
 

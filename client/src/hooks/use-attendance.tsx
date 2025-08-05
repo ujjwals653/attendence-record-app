@@ -78,6 +78,16 @@ export function useAttendance() {
     });
   }, []);
 
+  const removeAttendance = useCallback((subjectId: string, lectureNumber: number, date?: string) => {
+    const attendanceDate = date || getCurrentDateString();
+    
+    setAttendanceRecords(prev => prev.filter(r => 
+      !(r.subjectId === subjectId && 
+        r.date === attendanceDate && 
+        r.lectureNumber === lectureNumber)
+    ));
+  }, []);
+
   const getTodaySubjects = useCallback((): Subject[] => {
     const todayDay = getTodayDay();
     return subjects.filter(subject => subject.schedule.includes(todayDay));
@@ -133,6 +143,7 @@ export function useAttendance() {
     addSubject,
     removeSubject,
     markAttendance,
+    removeAttendance,
     getTodaySubjects,
     getAttendanceForDate,
     getAttendanceForSubjectAndDate,

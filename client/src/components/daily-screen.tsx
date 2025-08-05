@@ -3,7 +3,7 @@ import { Save, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DatePicker } from "./date-picker";
-import { LectureAttendance } from "./lecture-attendance";
+import { DynamicLectureAttendance } from "./dynamic-lecture-attendance";
 import { Subject, AttendanceRecord } from "@shared/schema";
 import { formatDisplayDate, getCurrentDateString, getTodayDay } from "@/lib/date-utils";
 import { format, addDays, subDays, parseISO } from "date-fns";
@@ -12,12 +12,14 @@ interface DailyScreenProps {
   subjects: Subject[];
   getAttendanceForSubjectAndDate: (subjectId: string, date: string) => AttendanceRecord[];
   markAttendance: (subjectId: string, lectureNumber: number, present: boolean, date?: string) => void;
+  removeAttendance: (subjectId: string, lectureNumber: number, date?: string) => void;
 }
 
 export function DailyScreen({ 
   subjects, 
   getAttendanceForSubjectAndDate, 
-  markAttendance 
+  markAttendance,
+  removeAttendance 
 }: DailyScreenProps) {
   const [selectedDate, setSelectedDate] = useState(getCurrentDateString());
   
@@ -121,15 +123,16 @@ export function DailyScreen({
             const existingRecords = getAttendanceForSubjectAndDate(subject.id, selectedDate);
 
             return (
-              <LectureAttendance
+              <DynamicLectureAttendance
                 key={subject.id}
                 subjectId={subject.id}
                 subjectName={subject.name}
                 subjectColor={subject.color}
-                lecturesPerDay={subject.lecturesPerDay}
+                defaultLecturesPerDay={subject.lecturesPerDay}
                 date={selectedDate}
                 existingRecords={existingRecords}
                 onMarkAttendance={markAttendance}
+                onRemoveAttendance={removeAttendance}
               />
             );
           })}
