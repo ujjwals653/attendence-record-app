@@ -3,6 +3,7 @@ import { Subject, AttendanceRecord, InsertSubject, InsertAttendanceRecord, Atten
 import { LocalStorage } from "@/lib/storage";
 import { getCurrentDateString, getTodayDay } from "@/lib/date-utils";
 import { nanoid } from "nanoid";
+import { ImportData } from "@shared/schema";
 
 export function useAttendance() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -44,6 +45,14 @@ export function useAttendance() {
   const removeSubject = useCallback((subjectId: string) => {
     setSubjects(prev => prev.filter(s => s.id !== subjectId));
     setAttendanceRecords(prev => prev.filter(r => r.subjectId !== subjectId));
+  }, []);
+
+  const editSubject = useCallback((subjectId: string, updates: Partial<InsertSubject>) => {
+    setSubjects(prev => prev.map(subject => 
+      subject.id === subjectId 
+        ? { ...subject, ...updates }
+        : subject
+    ));
   }, []);
 
   const markAttendance = useCallback((subjectId: string, lectureNumber: number, present: boolean, date?: string) => {
@@ -136,12 +145,57 @@ export function useAttendance() {
     };
   }, [getAttendanceStats]);
 
+  const importData = useCallback((data: ImportData) => {
+    // Convert AttendanceStats back to Subject and AttendanceRecord
+    const existingSubjects = LocalStorage.getSubjects();
+    
+    data.subjects.forEach((stat: AttendanceStats) => {
+      // Find if subject already exists
+      const existingSubject = existingSubjects.find((s: Subject) => s.name === stat.subjectName);
+      
+      if (!existingSubject) {
+        // Create a new subject with imported or default schedule and color
+        const newSubject: Subject = {
+          id: stat.subjectId,
+          name: stat.subjectName,
+          schedule: stat.schedule || [1, 2, 3, 4, 5], // Use imported schedule or default to weekdays
+          lecturesPerDay: 1,
+          color: stat.color || "#8B5CF6", // Use imported color or default purple
+          createdAt: new Date()
+        };
+        setSubjects(prev => [...prev, newSubject]);
+      }
+
+      // Create attendance records based on stats
+      const presentRecords: AttendanceRecord[] = Array.from({ length: stat.presentClasses }, (_, i) => ({
+        id: nanoid(),
+        subjectId: stat.subjectId,
+        date: getCurrentDateString(), // Default to current date
+        lectureNumber: 1,
+        present: true,
+        createdAt: new Date()
+      }));
+
+      const absentRecords: AttendanceRecord[] = Array.from({ length: stat.totalClasses - stat.presentClasses }, (_, i) => ({
+        id: nanoid(),
+        subjectId: stat.subjectId,
+        date: getCurrentDateString(), // Default to current date
+        lectureNumber: 1,
+        present: false,
+        createdAt: new Date()
+      }));
+
+      setAttendanceRecords(prev => [...prev, ...presentRecords, ...absentRecords]);
+    });
+  }, []);
+
   return {
     subjects,
     attendanceRecords,
     loading,
     addSubject,
     removeSubject,
+    editSubject,
     markAttendance,
     removeAttendance,
     getTodaySubjects,
@@ -149,5 +203,6 @@ export function useAttendance() {
     getAttendanceForSubjectAndDate,
     getAttendanceStats,
     getOverallStats,
+    importData
   };
 }

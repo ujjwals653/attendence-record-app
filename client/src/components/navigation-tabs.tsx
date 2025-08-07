@@ -1,34 +1,47 @@
-import { cn } from "@/lib/utils";
-import { CalendarCheck, ChartBar, Plus } from "lucide-react";
+import { cn } from '@/lib/utils';
+import { CalendarCheck, ChartBar, Plus } from 'lucide-react';
 
 interface NavigationTabsProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
+  darkMode?: boolean;
 }
 
-export function NavigationTabs({ activeTab, onTabChange }: NavigationTabsProps) {
+export function NavigationTabs({
+  activeTab,
+  onTabChange,
+  darkMode,
+}: NavigationTabsProps) {
   const tabs = [
-    { id: "setup", label: "Setup", icon: Plus },
-    { id: "daily", label: "Today", icon: CalendarCheck },
-    { id: "dashboard", label: "Stats", icon: ChartBar },
+    { id: 'setup', label: 'Setup', icon: Plus },
+    { id: 'daily', label: 'Today', icon: CalendarCheck },
+    { id: 'dashboard', label: 'Stats', icon: ChartBar },
   ];
 
   return (
-    <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div
+      className={cn(
+        'border-b sticky top-0 z-10',
+        darkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'
+      )}
+    >
       <div className="flex">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
-          
           return (
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
               className={cn(
-                "flex-1 py-3 px-4 text-center border-b-2 font-medium transition-colors",
+                'flex-1 py-3 px-4 text-center border-b-2 font-medium transition-colors',
                 isActive
-                  ? "border-purple-500 text-purple-600 bg-purple-50"
-                  : "border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+                  ? darkMode
+                    ? 'border-purple-400 text-purple-300 bg-gray-800'
+                    : 'border-purple-500 text-purple-600 bg-purple-50'
+                  : darkMode
+                  ? 'border-transparent text-gray-400 hover:text-white hover:bg-gray-800'
+                  : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50'
               )}
               data-testid={`tab-${tab.id}`}
             >

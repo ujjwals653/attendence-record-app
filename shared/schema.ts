@@ -39,6 +39,18 @@ export interface AttendanceStats {
   totalClasses: number;
   presentClasses: number;
   attendancePercentage: number;
+  schedule?: number[];
+  color?: string;
+}
+
+export interface ImportData {
+  overallStats: {
+    totalClasses: number;
+    totalPresent: number;
+    overallPercentage: number;
+  };
+  subjects: AttendanceStats[];
+  exportDate: string;
 }
 
 export interface AppSettings {
