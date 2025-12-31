@@ -12,15 +12,15 @@ A small attendance tracking app built with Vite + React + TypeScript.
 
 Home screen:
 
-![Home screen](screenshots/home.png)
+<img src="screenshots/home.png" width="260" style="aspect-ratio: 9 / 19;" />
 
 Daily attendance:
 
-![Daily screen](screenshots/daily-screen.png)
+<img src="screenshots/daily-screen.png" width="260" style="aspect-ratio: 9 / 19;" />
 
 Lecture attendance:
 
-![Lecture attendance](screenshots/lecture-attendance.png)
+<img src="screenshots/lecture-attendance.png" width="260" style="aspect-ratio: 9 / 19;" />
 
 ## Run locally
 
